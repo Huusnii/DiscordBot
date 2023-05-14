@@ -50,7 +50,7 @@ async def on_message(message):
 
 async def sendMessage(channelName, author, content):
   webhook = Webhook.from_url(webhookURL, adapter=RequestsWebhookAdapter())
-  webhook.send('{}\n{}: \n{}'.format(channelName, author, content))
+  webhook.send('FROM: {}\n{}: \n{}'.format(channelName, author, content))
 
 keep_alive()
 client.run(token)
