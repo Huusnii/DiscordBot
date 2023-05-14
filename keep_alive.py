@@ -1,3 +1,5 @@
+# THIS IS TO KEEP THE APPLICATION STAY RUNNING IN REPLIT
+
 from flask import Flask
 from threading import Thread
 
