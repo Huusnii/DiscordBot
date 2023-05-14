@@ -1,7 +1,5 @@
 import discord
-import os
-import requests
-from website import run
+import setting
 from discord import Webhook, RequestsWebhookAdapter
 
 client = discord.Client()
@@ -11,16 +9,6 @@ try:
 except:
     print("No rate limit")
 
-##SECRET##
-galleryId = os.environ['GALLERY_ID']
-token = os.environ['TOKEN']
-webhookURL = os.environ['WEBHOOK']
-
-##URL WHITELISH##
-URLs = ["https://www.youtube",
-        "https://youtu.be", 
-        "https://outplayed.tv"]
-
 @client.event
 async def on_ready():
   print('Bot logged in as {0.user}'.format(client))
@@ -28,13 +16,20 @@ async def on_ready():
 ##READ MESSAGES##
 @client.event
 async def on_message(message):
+  
+  ##CHECK VALIDATION##
   if message.author == client.user:
     return
 
-  if message.channel.id == galleryId:
+  if message.channel.id == setting.galleryId:
     return
 
-  if message.author.bot: return
+  if not setting.isAllowBot:
+    return
+
+  for user in setting.blackListUsers:
+    if user == message.author.memberId: #check again how to get member id
+      return
 
   ##READ MESSAGES STRING##
   for url in URLs: 
@@ -49,8 +44,7 @@ async def on_message(message):
     pass
 
 async def sendMessage(channelName, author, content):
-  webhook = Webhook.from_url(webhookURL, adapter=RequestsWebhookAdapter())
+  webhook = Webhook.from_url(setting.webhookURL, adapter=RequestsWebhookAdapter())
   webhook.send('FROM: {}\n{}: \n{}'.format(channelName, author, content))
 
-run()
-client.run(token)
+client.run(setting.token)
